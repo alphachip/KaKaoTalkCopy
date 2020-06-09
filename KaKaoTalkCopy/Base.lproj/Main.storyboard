@@ -22,10 +22,10 @@
             </objects>
             <point key="canvasLocation" x="139" y="104"/>
         </scene>
-        <!--Login View Controller-->
+        <!--Sign In View Controller-->
         <scene sceneID="bUk-hQ-KXo">
             <objects>
-                <viewController storyboardIdentifier="LoginViewController" id="ELm-5a-Qr6" customClass="LoginViewController" customModule="KaKaoTalkCopy" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="SignInViewController" id="ELm-5a-Qr6" customClass="SignInViewController" customModule="KaKaoTalkCopy" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="dnP-mk-bOU">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -42,7 +42,7 @@
                                 <constraints>
                                     <constraint firstAttribute="height" constant="40" id="zYX-o7-gc4"/>
                                 </constraints>
-                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
                                 <userDefinedRuntimeAttributes>
                                     <userDefinedRuntimeAttribute type="color" keyPath="borderInactiveColor">
@@ -58,8 +58,8 @@
                                 <constraints>
                                     <constraint firstAttribute="height" constant="40" id="RVn-Dz-OOm"/>
                                 </constraints>
-                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
-                                <textInputTraits key="textInputTraits"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits" secureTextEntry="YES"/>
                                 <userDefinedRuntimeAttributes>
                                     <userDefinedRuntimeAttribute type="color" keyPath="borderInactiveColor">
                                         <color key="value" cocoaTouchSystemColor="darkTextColor"/>
@@ -77,6 +77,9 @@
                                 <state key="normal" title="Sign Up">
                                     <color key="titleColor" red="0.99999600649999998" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 </state>
+                                <connections>
+                                    <action selector="signUpEvent:" destination="ELm-5a-Qr6" eventType="touchUpInside" id="jgP-tc-usw"/>
+                                </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="TJM-yw-Kx3">
                                 <rect key="frame" x="20" y="450" width="374" height="40"/>
@@ -86,6 +89,9 @@
                                 <state key="normal" title="Sign In">
                                     <color key="titleColor" red="0.99999600649999998" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 </state>
+                                <connections>
+                                    <action selector="signInEvent:" destination="ELm-5a-Qr6" eventType="touchUpInside" id="XXZ-wd-7BT"/>
+                                </connections>
                             </button>
                         </subviews>
                         <color key="backgroundColor" red="0.96862745100000003" green="0.8862745098" blue="0.29803921570000003" alpha="1" colorSpace="calibratedRGB"/>
@@ -115,12 +121,31 @@
                         <viewLayoutGuide key="safeArea" id="e5B-tR-fFH"/>
                     </view>
                     <connections>
-                        <outlet property="signIn" destination="Hm0-bb-6pd" id="ACe-nF-cZy"/>
+                        <outlet property="emailTextField" destination="j5i-U7-tUp" id="pdg-TU-nyI"/>
+                        <outlet property="passwordTextField" destination="q6y-E8-ai0" id="yOK-dr-zkU"/>
+                        <outlet property="signInButton" destination="TJM-yw-Kx3" id="7hh-HQ-APZ"/>
+                        <outlet property="signUpButton" destination="Hm0-bb-6pd" id="ACe-nF-cZy"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="6Xa-1q-Kxa" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="808.69565217391312" y="103.79464285714285"/>
+        </scene>
+        <!--Friends-->
+        <scene sceneID="2cs-tc-5rs">
+            <objects>
+                <viewController storyboardIdentifier="FriendsViewController" id="2Hg-4g-GUF" customClass="FriendsViewController" customModule="KaKaoTalkCopy" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="Clv-rl-s64">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <viewLayoutGuide key="safeArea" id="5EI-oQ-cu8"/>
+                    </view>
+                    <tabBarItem key="tabBarItem" title="Friends" id="4EA-in-LaX"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="eQG-Sv-wwX" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2400" y="103.79464285714285"/>
         </scene>
         <!--Sign Up View Controller-->
         <scene sceneID="DdG-DO-V2e">
@@ -142,7 +167,7 @@
                                 <constraints>
                                     <constraint firstAttribute="height" constant="40" id="WCH-ZT-Q9i"/>
                                 </constraints>
-                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
                                 <userDefinedRuntimeAttributes>
                                     <userDefinedRuntimeAttribute type="color" keyPath="borderInactiveColor">
@@ -158,7 +183,7 @@
                                 <constraints>
                                     <constraint firstAttribute="height" constant="40" id="p9F-zH-imB"/>
                                 </constraints>
-                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
                                 <userDefinedRuntimeAttributes>
                                     <userDefinedRuntimeAttribute type="color" keyPath="borderInactiveColor">
@@ -174,8 +199,8 @@
                                 <constraints>
                                     <constraint firstAttribute="height" constant="40" id="Peb-Hs-ewW"/>
                                 </constraints>
-                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
-                                <textInputTraits key="textInputTraits"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits" secureTextEntry="YES"/>
                                 <userDefinedRuntimeAttributes>
                                     <userDefinedRuntimeAttribute type="color" keyPath="borderInactiveColor">
                                         <color key="value" cocoaTouchSystemColor="darkTextColor"/>
@@ -241,6 +266,57 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="75Z-mV-1Iw" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="798.55072463768124" y="748.66071428571422"/>
+        </scene>
+        <!--Tab Bar Controller-->
+        <scene sceneID="PP8-E5-ulF">
+            <objects>
+                <tabBarController storyboardIdentifier="MainTabBarController" automaticallyAdjustsScrollViewInsets="NO" id="8Hm-L9-azn" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <tabBar key="tabBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="nkG-BO-WDp">
+                        <autoresizingMask key="autoresizingMask"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    </tabBar>
+                    <connections>
+                        <segue destination="2Hg-4g-GUF" kind="relationship" relationship="viewControllers" id="1mm-Vc-FJN"/>
+                        <segue destination="zUw-AO-8sz" kind="relationship" relationship="viewControllers" id="KjZ-dd-BiQ"/>
+                        <segue destination="fqe-KQ-eMa" kind="relationship" relationship="viewControllers" id="fuB-X4-ROO"/>
+                    </connections>
+                </tabBarController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="jnC-BA-wCa" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1489.8550724637682" y="103.79464285714285"/>
+        </scene>
+        <!--Chats-->
+        <scene sceneID="5BP-WW-mpO">
+            <objects>
+                <viewController id="zUw-AO-8sz" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="hn9-Ef-b1j">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <viewLayoutGuide key="safeArea" id="pOO-Dk-7FW"/>
+                    </view>
+                    <tabBarItem key="tabBarItem" title="Chats" id="zdI-ss-Y5y"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="2xa-ic-w5I" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2399" y="814"/>
+        </scene>
+        <!--Account-->
+        <scene sceneID="xWb-kU-jXV">
+            <objects>
+                <viewController id="fqe-KQ-eMa" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="whD-AM-alf">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <viewLayoutGuide key="safeArea" id="ePx-MY-ZzD"/>
+                    </view>
+                    <tabBarItem key="tabBarItem" title="Account" id="SQw-eo-CUq"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="30H-7l-Ai4" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1490" y="814"/>
         </scene>
     </scenes>
     <resources>

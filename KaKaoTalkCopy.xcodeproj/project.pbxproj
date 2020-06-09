@@ -14,9 +14,11 @@
 		4D10C56D2484C1A100450A18 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4D10C56B2484C1A100450A18 /* Main.storyboard */; };
 		4D10C56F2484C1A200450A18 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4D10C56E2484C1A200450A18 /* Assets.xcassets */; };
 		4D10C5722484C1A200450A18 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4D10C5702484C1A200450A18 /* LaunchScreen.storyboard */; };
+		4D1766C3248EB47D003D47A5 /* FriendsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D1766C2248EB47D003D47A5 /* FriendsViewController.swift */; };
 		4D195622248B306C007327D8 /* RemoteConfigDefaults.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4D195621248B306C007327D8 /* RemoteConfigDefaults.plist */; };
-		4D195624248B54D1007327D8 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D195623248B54D1007327D8 /* LoginViewController.swift */; };
+		4D195624248B54D1007327D8 /* SignInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D195623248B54D1007327D8 /* SignInViewController.swift */; };
 		4D2A210C248A14A9005536BA /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4D2A210B248A14A9005536BA /* GoogleService-Info.plist */; };
+		4DCF8891248FABF5000DB15F /* UserModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DCF8890248FABF5000DB15F /* UserModel.swift */; };
 		E0E5CC30C7A2FBF6C07E8961 /* Pods_KaKaoTalkCopy.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D97EA131F920958A093F8E9A /* Pods_KaKaoTalkCopy.framework */; };
 /* End PBXBuildFile section */
 
@@ -32,9 +34,12 @@
 		4D10C56E2484C1A200450A18 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		4D10C5712484C1A200450A18 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		4D10C5732484C1A200450A18 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		4D1766C2248EB47D003D47A5 /* FriendsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendsViewController.swift; sourceTree = "<group>"; };
 		4D195621248B306C007327D8 /* RemoteConfigDefaults.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = RemoteConfigDefaults.plist; sourceTree = "<group>"; };
-		4D195623248B54D1007327D8 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
+		4D195623248B54D1007327D8 /* SignInViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInViewController.swift; sourceTree = "<group>"; };
 		4D2A210B248A14A9005536BA /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
+		4DCF888E248FA9AA000DB15F /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
+		4DCF8890248FABF5000DB15F /* UserModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserModel.swift; sourceTree = "<group>"; };
 		D97EA131F920958A093F8E9A /* Pods_KaKaoTalkCopy.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_KaKaoTalkCopy.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -80,8 +85,10 @@
 				4D10C5702484C1A200450A18 /* LaunchScreen.storyboard */,
 				4D10C5732484C1A200450A18 /* Info.plist */,
 				4D195621248B306C007327D8 /* RemoteConfigDefaults.plist */,
-				4D195623248B54D1007327D8 /* LoginViewController.swift */,
+				4D195623248B54D1007327D8 /* SignInViewController.swift */,
 				4D023945248CE12A00954D89 /* SignUpViewController.swift */,
+				4D1766C2248EB47D003D47A5 /* FriendsViewController.swift */,
+				4DCF8890248FABF5000DB15F /* UserModel.swift */,
 			);
 			path = KaKaoTalkCopy;
 			sourceTree = "<group>";
@@ -89,6 +96,7 @@
 		7E1F23EDA4FCF0BE2507A18E /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				4DCF888E248FA9AA000DB15F /* WebKit.framework */,
 				D97EA131F920958A093F8E9A /* Pods_KaKaoTalkCopy.framework */,
 			);
 			name = Frameworks;
@@ -220,9 +228,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4D195624248B54D1007327D8 /* LoginViewController.swift in Sources */,
+				4D195624248B54D1007327D8 /* SignInViewController.swift in Sources */,
+				4DCF8891248FABF5000DB15F /* UserModel.swift in Sources */,
 				4D10C56A2484C1A100450A18 /* ViewController.swift in Sources */,
 				4D10C5662484C1A100450A18 /* AppDelegate.swift in Sources */,
+				4D1766C3248EB47D003D47A5 /* FriendsViewController.swift in Sources */,
 				4D10C5682484C1A100450A18 /* SceneDelegate.swift in Sources */,
 				4D023946248CE12A00954D89 /* SignUpViewController.swift in Sources */,
 			);

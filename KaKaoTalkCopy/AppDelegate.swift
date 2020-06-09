@@ -12,8 +12,6 @@ import Firebase
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
-    
-
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         FirebaseApp.configure()
@@ -34,6 +32,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Use this method to release any resources that were specific to the discarded scenes, as they will not return.
     }
 
-
 }
 
+extension UIViewController {
+    func displayOKAlert(err: Error?, title: String?, msg: String) {
+        if let err = err {
+            print(err)
+        }
+        let alert = UIAlertController(title: title, message: msg, preferredStyle: UIAlertController.Style.alert)
+        
+        alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default))
+        
+        self.present(alert, animated: true, completion: nil)
+    }
+}

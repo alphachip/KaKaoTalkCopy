@@ -49,7 +49,7 @@ class ViewController: UIViewController {
             
             self.present(alert, animated: true, completion: nil)
         } else {
-            let loginVC = self.storyboard?.instantiateViewController(withIdentifier: "LoginViewController") as! LoginViewController
+            let loginVC = self.storyboard?.instantiateViewController(withIdentifier: "SignInViewController") as! SignInViewController
             loginVC.modalPresentationStyle = .fullScreen
             self.present(loginVC, animated: false, completion: nil)
         }
