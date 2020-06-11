@@ -17,5 +17,6 @@ pod 'Firebase/Auth'
 pod 'Firebase/Storage'
 
 pod 'TextFieldEffects'
+pod 'ObjectMapper'
 
 end

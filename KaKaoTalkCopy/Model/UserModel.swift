@@ -8,7 +8,9 @@
 // data model
 import UIKit
 
+@objcMembers
 class UserModel: NSObject {
+    var uid: String?
     var name: String?
     var profileImageURL: String?
 }

@@ -41,7 +41,7 @@ class ViewController: UIViewController {
         let caps = remoteConfig["splash_message_caps"].boolValue
         let message = remoteConfig["splash_message"].stringValue
         
-        if(caps){
+        if caps {
             let alert = UIAlertController(title: "Notice", message: message, preferredStyle: UIAlertController.Style.alert)
             alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: { (action) in
                 exit(0)
@@ -49,9 +49,9 @@ class ViewController: UIViewController {
             
             self.present(alert, animated: true, completion: nil)
         } else {
-            let loginVC = self.storyboard?.instantiateViewController(withIdentifier: "SignInViewController") as! SignInViewController
-            loginVC.modalPresentationStyle = .fullScreen
-            self.present(loginVC, animated: false, completion: nil)
+            let signInViewController = self.storyboard?.instantiateViewController(withIdentifier: "SignInViewController") as! SignInViewController
+            signInViewController.modalPresentationStyle = .fullScreen
+            self.present(signInViewController, animated: false, completion: nil)
         }
     }
     

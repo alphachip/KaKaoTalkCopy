@@ -26,15 +26,12 @@ class SignInViewController: UIViewController {
         statusBar.snp.makeConstraints { (m) in
             m.right.top.left.equalTo(self.view)
         }
-        // Do any additional setup after loading the view.
         
-        Auth.auth().addStateDidChangeListener { (auth, user) in
-            if user != nil {
-                let view = self.storyboard?.instantiateViewController(withIdentifier: "MainTabBarController") as! UITabBarController
-                view.modalPresentationStyle = .fullScreen
-                self.present(view, animated: true, completion: nil)
-            }
-        }
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(true)
+        self.autoSignIn()
     }
     
     enum SignInAlertMsg : String {
@@ -50,6 +47,8 @@ class SignInViewController: UIViewController {
         Auth.auth().signIn(withEmail: email, password: password) { (user, err) in
             if let err = err {
                 self.displayOKAlert(err: err, title: SignInAlertMsg.failedSignIn.rawValue, msg: err.localizedDescription)
+            } else {
+                self.autoSignIn()
             }
         }
     }
@@ -58,6 +57,14 @@ class SignInViewController: UIViewController {
         let view = self.storyboard?.instantiateViewController(withIdentifier: "SignUpViewController") as! SignUpViewController
         
         self.present(view, animated: true, completion: nil)
+    }
+    
+    func autoSignIn() {
+        if Auth.auth().currentUser != nil {
+                let view = self.storyboard?.instantiateViewController(withIdentifier: "MainTabBarController") as! UITabBarController
+                view.modalPresentationStyle = .fullScreen
+                self.present(view, animated: true, completion: nil)
+        }
     }
     
     /*

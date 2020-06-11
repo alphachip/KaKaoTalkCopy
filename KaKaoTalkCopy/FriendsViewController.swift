@@ -17,7 +17,6 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
         tableView = UITableView()
         tableView.delegate = self
         tableView.dataSource = self
@@ -25,19 +24,23 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
         view.addSubview(tableView)
 
         tableView.snp.makeConstraints { (m) in
-            m.top.equalTo(view).offset(20)
+            m.top.equalTo(view)
             m.bottom.left.right.equalTo(view)
         }
 
         Database.database().reference().child("users").observe(DataEventType.value) { (snapshot) in
 
             self.array.removeAll()
+            
+            //MARK: Read user info
             for child in snapshot.children {
                 let fchild = child as! DataSnapshot
                 let userModel = UserModel()
-
-                userModel.setValuesForKeys(fchild.value as! [String : Any])
-                self.array.append(userModel)
+                
+                if let dicItem = fchild.value as? [String : Any]{
+                    userModel.setValuesForKeys(dicItem)
+                    self.array.append(userModel)
+                }
             }
 
             DispatchQueue.main.async {
@@ -45,10 +48,6 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
             }
         }
 
-    }
-
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return array.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -83,11 +82,22 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
 
         return cell
     }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if let view = self.storyboard?.instantiateViewController(identifier: "ChatroomViewController") as? ChatroomViewController {
+            view.destinationUid = self.array[indexPath.row].uid
+            
+            self.navigationController?.pushViewController(view, animated: true)
+        }
+    }
 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 70
     }
-
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return array.count
+    }
     /*
     // MARK: - Navigation
 

@@ -29,7 +29,6 @@ class SignUpViewController: UIViewController, UINavigationControllerDelegate, UI
         profileImageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(imagePicker)))
         
         cancelTextField.addTarget(self, action: #selector(cancelEvent), for: .touchUpInside)
-        // Do any additional setup after loading the view.
     }
     
     enum SignUpAlertMsg : String {
@@ -77,7 +76,7 @@ class SignUpViewController: UIViewController, UINavigationControllerDelegate, UI
                                 if err == nil, url == nil {
                                     Database.database().reference().child("users").child(uid).setValue(["name":name])
                                 } else {
-                                    Database.database().reference().child("users").child(uid).setValue(["name":name,"profileImageURL": url?.absoluteString])
+                                    Database.database().reference().child("users").child(uid).setValue(["uid": Auth.auth().currentUser?.uid, "name":name, "profileImageURL": url?.absoluteString])
                                 }
                             }
                             

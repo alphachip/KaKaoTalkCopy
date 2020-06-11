@@ -90,7 +90,7 @@
                                     <color key="titleColor" red="0.99999600649999998" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 </state>
                                 <connections>
-                                    <action selector="signInEvent:" destination="ELm-5a-Qr6" eventType="touchUpInside" id="XXZ-wd-7BT"/>
+                                    <action selector="signInEvent:" destination="ELm-5a-Qr6" eventType="touchUpInside" id="Pso-02-Snk"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -131,7 +131,7 @@
             </objects>
             <point key="canvasLocation" x="808.69565217391312" y="103.79464285714285"/>
         </scene>
-        <!--Friends-->
+        <!--Friends View Controller-->
         <scene sceneID="2cs-tc-5rs">
             <objects>
                 <viewController storyboardIdentifier="FriendsViewController" id="2Hg-4g-GUF" customClass="FriendsViewController" customModule="KaKaoTalkCopy" customModuleProvider="target" sceneMemberID="viewController">
@@ -141,11 +141,11 @@
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <viewLayoutGuide key="safeArea" id="5EI-oQ-cu8"/>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Friends" id="4EA-in-LaX"/>
+                    <navigationItem key="navigationItem" id="Qg6-sd-fQr"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="eQG-Sv-wwX" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2400" y="103.79464285714285"/>
+            <point key="canvasLocation" x="3308.6956521739135" y="103.79464285714285"/>
         </scene>
         <!--Sign Up View Controller-->
         <scene sceneID="DdG-DO-V2e">
@@ -273,11 +273,12 @@
                 <tabBarController storyboardIdentifier="MainTabBarController" automaticallyAdjustsScrollViewInsets="NO" id="8Hm-L9-azn" sceneMemberID="viewController">
                     <toolbarItems/>
                     <tabBar key="tabBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="nkG-BO-WDp">
+                        <rect key="frame" x="0.0" y="0.0" width="1000" height="1000"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     </tabBar>
                     <connections>
-                        <segue destination="2Hg-4g-GUF" kind="relationship" relationship="viewControllers" id="1mm-Vc-FJN"/>
+                        <segue destination="2ch-a0-SRx" kind="relationship" relationship="viewControllers" id="1mm-Vc-FJN"/>
                         <segue destination="zUw-AO-8sz" kind="relationship" relationship="viewControllers" id="KjZ-dd-BiQ"/>
                         <segue destination="fqe-KQ-eMa" kind="relationship" relationship="viewControllers" id="fuB-X4-ROO"/>
                     </connections>
@@ -317,6 +318,73 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="30H-7l-Ai4" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1490" y="814"/>
+        </scene>
+        <!--Friends-->
+        <scene sceneID="0mp-K5-3uP">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="2ch-a0-SRx" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="Friends" id="4EA-in-LaX"/>
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="TNY-iC-OLd">
+                        <rect key="frame" x="0.0" y="44" width="414" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="2Hg-4g-GUF" kind="relationship" relationship="rootViewController" id="GHt-iu-kVt"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="kyr-32-uwD" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2398.5507246376815" y="103.79464285714285"/>
+        </scene>
+        <!--Chatroom View Controller-->
+        <scene sceneID="wgw-xm-NqK">
+            <objects>
+                <viewController storyboardIdentifier="ChatroomViewController" id="Y5W-nD-gjE" customClass="ChatroomViewController" customModule="KaKaoTalkCopy" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="D1n-ZJ-RTk">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="d7n-ka-zwc">
+                                <rect key="frame" x="348" y="832" width="46" height="30"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="46" id="QaH-sF-gkF"/>
+                                    <constraint firstAttribute="height" constant="30" id="X2y-nh-4Zo"/>
+                                </constraints>
+                                <state key="normal" title="Send"/>
+                                <connections>
+                                    <action selector="createChatroom:" destination="Y5W-nD-gjE" eventType="touchUpInside" id="I45-w0-WiB"/>
+                                </connections>
+                            </button>
+                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="gPw-f0-cs5">
+                                <rect key="frame" x="20" y="828" width="320" height="34"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="34" id="EEJ-qj-HDX"/>
+                                    <constraint firstAttribute="width" constant="320" id="S5d-22-3Jm"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <constraints>
+                            <constraint firstItem="d7n-ka-zwc" firstAttribute="leading" secondItem="gPw-f0-cs5" secondAttribute="trailing" constant="8" id="Wxc-uE-Y4o"/>
+                            <constraint firstItem="Y5b-ry-XiB" firstAttribute="trailing" secondItem="d7n-ka-zwc" secondAttribute="trailing" constant="20" id="bFP-ch-Qnl"/>
+                            <constraint firstItem="gPw-f0-cs5" firstAttribute="bottom" secondItem="Y5b-ry-XiB" secondAttribute="bottom" id="ds6-dP-YOv"/>
+                            <constraint firstItem="gPw-f0-cs5" firstAttribute="leading" secondItem="Y5b-ry-XiB" secondAttribute="leading" constant="20" id="kVS-Te-4t2"/>
+                            <constraint firstItem="d7n-ka-zwc" firstAttribute="bottom" secondItem="Y5b-ry-XiB" secondAttribute="bottom" id="n66-hr-9GB"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="Y5b-ry-XiB"/>
+                    </view>
+                    <connections>
+                        <outlet property="messageTextField" destination="gPw-f0-cs5" id="bFK-h2-ADi"/>
+                        <outlet property="sendButton" destination="d7n-ka-zwc" id="Mc9-ux-IMR"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="HqJ-HP-PxJ" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="4079.7101449275365" y="103.79464285714285"/>
         </scene>
     </scenes>
     <resources>
