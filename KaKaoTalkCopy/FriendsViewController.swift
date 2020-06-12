@@ -11,10 +11,10 @@ import SnapKit
 import Firebase
 
 class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
-
+    
     var array: [UserModel] = []
     var tableView: UITableView!
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView = UITableView()
@@ -22,15 +22,17 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
         tableView.dataSource = self
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
         view.addSubview(tableView)
-
+        
         tableView.snp.makeConstraints { (m) in
             m.top.equalTo(view)
             m.bottom.left.right.equalTo(view)
         }
-
+        
         Database.database().reference().child("users").observe(DataEventType.value) { (snapshot) in
-
+            
             self.array.removeAll()
+            
+            let myUid = Auth.auth().currentUser?.uid
             
             //MARK: Read user info
             for child in snapshot.children {
@@ -39,17 +41,19 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
                 
                 if let dicItem = fchild.value as? [String : Any]{
                     userModel.setValuesForKeys(dicItem)
-                    self.array.append(userModel)
+                    if userModel.uid != myUid {
+                        self.array.append(userModel)
+                    }
                 }
             }
-
+            
             DispatchQueue.main.async {
                 self.tableView.reloadData();
             }
         }
-
+        
     }
-
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
         let imageView = UIImageView()
@@ -68,7 +72,7 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
                 imageView.layer.cornerRadius = imageView.frame.size.width/2
                 imageView.clipsToBounds = true
             }
-
+            
         }.resume()
         
         let label = UILabel()
@@ -77,9 +81,9 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
             m.centerY.equalTo(cell)
             m.left.equalTo(imageView.snp.right).offset(20)
         }
-
+        
         label.text = array[indexPath.row].name
-
+        
         return cell
     }
     
@@ -90,7 +94,7 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
             self.navigationController?.pushViewController(view, animated: true)
         }
     }
-
+    
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 70
     }
@@ -99,13 +103,13 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
         return array.count
     }
     /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
+     // MARK: - Navigation
+     
+     // In a storyboard-based application, you will often want to do a little preparation before navigation
+     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+     // Get the new view controller using segue.destination.
+     // Pass the selected object to the new view controller.
+     }
+     */
+    
 }
