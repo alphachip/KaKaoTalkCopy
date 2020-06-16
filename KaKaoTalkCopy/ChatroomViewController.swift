@@ -21,15 +21,64 @@ class ChatroomViewController: UIViewController, UITableViewDelegate, UITableView
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var messageTextField: UITextField!
     @IBOutlet weak var sendButton: UIButton!
+    @IBOutlet weak var keyboardHeightConstraint: NSLayoutConstraint!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         uid = Auth.auth().currentUser?.uid
         
-        debugPrint("debugPrint 29")
+//        debugPrint("debugPrint 29")
         DidCreateChatroom()
-        debugPrint("debugPrint 31")
+//        debugPrint("debugPrint 31")
+        self.tabBarController?.tabBar.isHidden = true // 탭바 사라짐
+        
+//        let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+//        view.addGestureRecognizer(tap)
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(keyboardWillAppear(notification:)),
+            name: UIResponder.keyboardWillShowNotification,
+            object: nil
+        )
+        
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(keyboardWillHide(notification:)),
+            name: UIResponder.keyboardWillHideNotification,
+            object: nil
+        )
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        NotificationCenter.default.removeObserver(self)
+        // NotificationCenter가 동작하는 방식
+        // 1. 특정 객체가 NotificationCenter에 등록된 Event를 발생 (=Post)
+        // 2. 해당 Event 처리가 등록된 Observer들이 등록된 행동을 취함
+        self.tabBarController?.tabBar.isHidden = false
+    }
+  
+    @objc func keyboardWillAppear(notification: Notification) {
+        debugPrint("debug keyboardSize.height")
+        if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
+            self.keyboardHeightConstraint.constant = keyboardSize.height
+            debugPrint("debug \(keyboardSize.height)")
+        }
+        
+        UIView.animate(withDuration: 0, animations: {
+            self.view.layoutIfNeeded()
+        }) { (complete) in
+            
+        }
+    }
+    
+    @objc func keyboardWillHide(notification: Notification)  {
+        self.keyboardHeightConstraint.constant = 17
+        self.view.layoutIfNeeded() // view의 변화를 동기적으로, 즉시 반영 요청
+        
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -60,60 +109,65 @@ class ChatroomViewController: UIViewController, UITableViewDelegate, UITableView
         }
     
     }
+    
+    @objc func dismissKeyboard() {
+        self.view.endEditing(true) // 키보드 내리기
+    }
+    
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return UITableView.automaticDimension
     }
     
     @IBAction func createChatroom(_ sender: Any) {
-        debugPrint("debugPrint 46")
+//        debugPrint("debugPrint 46")
         let chatroomInfo: Dictionary<String,Any> = [
             "users": [
                 uid!: true,
                 destinationUid!: true
             ]
         ]
-        debugPrint("debugPrint 53")
+//        debugPrint("debugPrint 53")
         // MARK: 방 생성
         // FIXME: else일 때만 comment 넘겨짐. nil일 때도 넘겨줘야.
         if chatroomUid == nil {
-            debugPrint("debugPrint 56")
+//            debugPrint("debugPrint 56")
             self.sendButton.isEnabled = false
-            debugPrint("debugPrint 58")
+//            debugPrint("debugPrint 58")
             Database.database().reference().child("chatrooms").childByAutoId().setValue(chatroomInfo, withCompletionBlock: { err,ref in
                 if err == nil {
-                    debugPrint("debugPrint 61")
+//                    debugPrint("debugPrint 61")
                     self.DidCreateChatroom()
-                    debugPrint("debugPrint 63")
+//                    debugPrint("debugPrint 63")
                 }
                 self.sendButton.isEnabled = true
-                debugPrint("debugPrint 66")
+//                debugPrint("debugPrint 66")
             })
         } else {
-            debugPrint("debugPrint 69")
+//            debugPrint("debugPrint 69")
             let value: Dictionary<String,Any> = [
                 "uid": uid!,
                 "message": messageTextField.text!
             ]
-            debugPrint("debugPrint 74")
+//            debugPrint("debugPrint 74")
             Database.database().reference().child("chatrooms").child(chatroomUid!).child("comments").childByAutoId().setValue(value)
-            debugPrint("debugPrint 76")
+//            debugPrint("debugPrint 76")
         }
     }
     
     func DidCreateChatroom() {
-        debugPrint("debugPrint 82")
+//        debugPrint("debugPrint 82")
         Database.database().reference().child("chatrooms").queryOrdered(byChild: "users/"+uid!).queryEqual(toValue: true).observeSingleEvent(of: DataEventType.value) { (datasnapshot) in
-            debugPrint("debugPrint 84")
+//            debugPrint("debugPrint 84")
             for item in datasnapshot.children.allObjects as! [DataSnapshot]{
-                debugPrint("debugPrint 86")
+//                debugPrint("debugPrint 86")
                 if let chatroomDic = item.value as? [String:AnyObject] {
-                    debugPrint("debugPrint 88")
+//                    debugPrint("debugPrint 88")
                     let chatModel = ChatModel(JSON: chatroomDic); debugPrint("debugPrint 89 \(String(describing: chatModel?.users))")
                     if chatModel?.users[self.destinationUid!] == true {
-                        debugPrint("debugPrint 91\(item.key)")
+//                        debugPrint("debugPrint 91\(item.key)")
                         self.chatroomUid = item.key
                         self.getDestinationInfo()
-                        debugPrint("debugPrint 94")
+//                        debugPrint("debugPrint 94")
                     }
                 }
             }
@@ -121,18 +175,18 @@ class ChatroomViewController: UIViewController, UITableViewDelegate, UITableView
     }
     
     func getMessageList() {
-        debugPrint("debugPrint 102")
+//        debugPrint("debugPrint 102")
         Database.database().reference().child("chatrooms").child(self.chatroomUid!).child("comments").observe(DataEventType.value){ (datasnapshot) in
             self.comments.removeAll() // 누적 방지
-            debugPrint("debugPrint 105")
+//            debugPrint("debugPrint 105")
             for item in datasnapshot.children.allObjects as! [DataSnapshot] {
-                debugPrint("debugPrint 107")
+//                debugPrint("debugPrint 107")
                 let comment = ChatModel.Comment(JSON: item.value as! [String:AnyObject])
                 self.comments.append(comment!)
             }
             
             self.tableView.reloadData()
-            debugPrint("debugPrint 113")
+//            debugPrint("debugPrint 113")
         }
     }
     
@@ -170,4 +224,4 @@ class DestinationMessageCell: UITableViewCell {
     @IBOutlet weak var messageLabel: UILabel!
 }
 
-// FIXME: 말풍선이 제대로 안 늘어남, 프로필 사진 잘림
+// MARK: 채팅방에서 상대 이름: 강의의 말풍선 만들기1
