@@ -33,8 +33,9 @@ class ChatroomViewController: UIViewController, UITableViewDelegate, UITableView
 //        debugPrint("debugPrint 31")
         self.tabBarController?.tabBar.isHidden = true // 탭바 사라짐
         
-//        let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
-//        view.addGestureRecognizer(tap)
+        // MARK: 바깥을 누르면 키보드가 사라짐
+        let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        view.addGestureRecognizer(tap)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -62,21 +63,22 @@ class ChatroomViewController: UIViewController, UITableViewDelegate, UITableView
     }
   
     @objc func keyboardWillAppear(notification: Notification) {
-        debugPrint("debug keyboardSize.height")
         if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
             self.keyboardHeightConstraint.constant = keyboardSize.height
-            debugPrint("debug \(keyboardSize.height)")
         }
         
         UIView.animate(withDuration: 0, animations: {
             self.view.layoutIfNeeded()
         }) { (complete) in
-            
+            // MARK: 키보드 올라올 때 채팅방 내용을 맨 아래로 보여주기
+            if self.comments.count > 0 {
+                self.tableView.scrollToRow(at: IndexPath(item: self.comments.count - 1, section: 0), at: UITableView.ScrollPosition.bottom, animated: true)
+            }
         }
     }
     
     @objc func keyboardWillHide(notification: Notification)  {
-        self.keyboardHeightConstraint.constant = 17
+        self.keyboardHeightConstraint.constant = 0
         self.view.layoutIfNeeded() // view의 변화를 동기적으로, 즉시 반영 요청
         
     }
@@ -149,7 +151,10 @@ class ChatroomViewController: UIViewController, UITableViewDelegate, UITableView
                 "message": messageTextField.text!
             ]
 //            debugPrint("debugPrint 74")
-            Database.database().reference().child("chatrooms").child(chatroomUid!).child("comments").childByAutoId().setValue(value)
+            Database.database().reference().child("chatrooms").child(chatroomUid!).child("comments").childByAutoId().setValue(value) { (err, ref) in
+                // MARK: 메세지 보내고 나서 입력창 초기화
+                self.messageTextField.text = ""
+            }
 //            debugPrint("debugPrint 76")
         }
     }
@@ -162,7 +167,8 @@ class ChatroomViewController: UIViewController, UITableViewDelegate, UITableView
 //                debugPrint("debugPrint 86")
                 if let chatroomDic = item.value as? [String:AnyObject] {
 //                    debugPrint("debugPrint 88")
-                    let chatModel = ChatModel(JSON: chatroomDic); debugPrint("debugPrint 89 \(String(describing: chatModel?.users))")
+                    let chatModel = ChatModel(JSON: chatroomDic);
+//                    debugPrint("debugPrint 89 \(String(describing: chatModel?.users))")
                     if chatModel?.users[self.destinationUid!] == true {
 //                        debugPrint("debugPrint 91\(item.key)")
                         self.chatroomUid = item.key
@@ -186,6 +192,11 @@ class ChatroomViewController: UIViewController, UITableViewDelegate, UITableView
             }
             
             self.tableView.reloadData()
+            
+            // MARK: 메세지 내용 가져올 때 채팅방 내용을 맨 아래로 보여주기
+            if self.comments.count > 0 {
+                self.tableView.scrollToRow(at: IndexPath(item: self.comments.count - 1, section: 0), at: UITableView.ScrollPosition.bottom, animated: true)
+            }
 //            debugPrint("debugPrint 113")
         }
     }
