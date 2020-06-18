@@ -93,6 +93,11 @@ class ChatroomViewController: UIViewController, UITableViewDelegate, UITableView
              let view = tableView.dequeueReusableCell(withIdentifier: "myMessageCell", for: indexPath) as! MyMessageCell
             view.messageLabel.text = self.comments[indexPath.row].message
             view.messageLabel.numberOfLines = 0 // MARK: 이렇게 해야 여러 줄 나올 수 있다?
+            
+            if let time = self.comments[indexPath.row].timestamp {
+                view.timestampLabel.text = time.toDayTime
+            }
+            
             return view
         } else {
             let view = tableView.dequeueReusableCell(withIdentifier: "destinationMessageCell", for: indexPath) as! DestinationMessageCell
@@ -107,6 +112,11 @@ class ChatroomViewController: UIViewController, UITableViewDelegate, UITableView
                     view.profileImageView.clipsToBounds = true
                 }
             }.resume()
+            
+            if let time = self.comments[indexPath.row].timestamp {
+                view.timestampLabel.text = time.toDayTime
+            }
+            
             return view
         }
     
@@ -135,7 +145,7 @@ class ChatroomViewController: UIViewController, UITableViewDelegate, UITableView
 //            debugPrint("debugPrint 56")
             self.sendButton.isEnabled = false
 //            debugPrint("debugPrint 58")
-            Database.database().reference().child("chatrooms").childByAutoId().setValue(chatroomInfo, withCompletionBlock: { err,ref in
+            Database.database().reference().child("chats").childByAutoId().setValue(chatroomInfo, withCompletionBlock: { err,ref in
                 if err == nil {
 //                    debugPrint("debugPrint 61")
                     self.DidCreateChatroom()
@@ -148,10 +158,11 @@ class ChatroomViewController: UIViewController, UITableViewDelegate, UITableView
 //            debugPrint("debugPrint 69")
             let value: Dictionary<String,Any> = [
                 "uid": uid!,
-                "message": messageTextField.text!
+                "message": messageTextField.text!,
+                "timestamp": ServerValue.timestamp()
             ]
 //            debugPrint("debugPrint 74")
-            Database.database().reference().child("chatrooms").child(chatroomUid!).child("comments").childByAutoId().setValue(value) { (err, ref) in
+            Database.database().reference().child("chats").child(chatroomUid!).child("comments").childByAutoId().setValue(value) { (err, ref) in
                 // MARK: 메세지 보내고 나서 입력창 초기화
                 self.messageTextField.text = ""
             }
@@ -161,7 +172,7 @@ class ChatroomViewController: UIViewController, UITableViewDelegate, UITableView
     
     func DidCreateChatroom() {
 //        debugPrint("debugPrint 82")
-        Database.database().reference().child("chatrooms").queryOrdered(byChild: "users/"+uid!).queryEqual(toValue: true).observeSingleEvent(of: DataEventType.value) { (datasnapshot) in
+        Database.database().reference().child("chats").queryOrdered(byChild: "users/"+uid!).queryEqual(toValue: true).observeSingleEvent(of: DataEventType.value) { (datasnapshot) in
 //            debugPrint("debugPrint 84")
             for item in datasnapshot.children.allObjects as! [DataSnapshot]{
 //                debugPrint("debugPrint 86")
@@ -182,7 +193,7 @@ class ChatroomViewController: UIViewController, UITableViewDelegate, UITableView
     
     func getMessageList() {
 //        debugPrint("debugPrint 102")
-        Database.database().reference().child("chatrooms").child(self.chatroomUid!).child("comments").observe(DataEventType.value){ (datasnapshot) in
+        Database.database().reference().child("chats").child(self.chatroomUid!).child("comments").observe(DataEventType.value){ (datasnapshot) in
             self.comments.removeAll() // 누적 방지
 //            debugPrint("debugPrint 105")
             for item in datasnapshot.children.allObjects as! [DataSnapshot] {
@@ -226,13 +237,25 @@ class ChatroomViewController: UIViewController, UITableViewDelegate, UITableView
     
 }
 
+extension Int {
+    var toDayTime: String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.locale = Locale(identifier: "ko_KR")
+        dateFormatter.dateFormat = "yyyy.MM.dd HH:mm"
+        let date = Date(timeIntervalSince1970: Double(self)/1000)
+        return dateFormatter.string(from: date)
+    }
+}
+
 class MyMessageCell: UITableViewCell {
     @IBOutlet weak var messageLabel: UILabel!
+    @IBOutlet weak var timestampLabel: UILabel!
 }
 
 class DestinationMessageCell: UITableViewCell {
     @IBOutlet weak var profileImageView: UIImageView!
     @IBOutlet weak var messageLabel: UILabel!
+    @IBOutlet weak var timestampLabel: UILabel!
 }
 
 // MARK: 채팅방에서 상대 이름: 강의의 말풍선 만들기1
