@@ -8,6 +8,7 @@
 
 import UIKit
 import Firebase
+import Kingfisher
 
 class ChatsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
@@ -15,6 +16,7 @@ class ChatsViewController: UIViewController, UITableViewDelegate, UITableViewDat
     
     var uid: String!
     var chats: [ChatModel]! = []
+    var destinationUsers: [String] = [] //대화하려는 유저들의 uid를 넣어둠
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -50,6 +52,7 @@ class ChatsViewController: UIViewController, UITableViewDelegate, UITableViewDat
         for item in chats[indexPath.row].users {
             if (item.key != self.uid) { // key에 나와 상대의 uid가 있음
                 destinationUid = item.key
+                destinationUsers.append(destinationUid!)
             }
         }
         
@@ -60,20 +63,38 @@ class ChatsViewController: UIViewController, UITableViewDelegate, UITableViewDat
             
             cell.nameLabel.text = userModel.name
             let url = URL(string: userModel.profileImageURL!)
-            URLSession.shared.dataTask(with: url!) { (data, response, err) in
-                // 스레드로 로딩. 지연되지 않도록함
-                DispatchQueue.main.async {
-                    cell.profileImageView.image = UIImage(data: data!)
-                    cell.profileImageView.layer.cornerRadius = cell.profileImageView.frame.width/2
-                    cell.profileImageView.layer.masksToBounds = true //원형으로
-                }
-            }.resume()
             
-            let messageKey = self.chats[indexPath.row].comments.keys.sorted() { $0>$1 } // 오름차순. 내림차순은 부등호 반대로
-            cell.messageLabel.text = self.chats[indexPath.row].comments[messageKey[0]]?.message
+            cell.profileImageView.layer.cornerRadius = cell.profileImageView.frame.width/2
+            cell.profileImageView.layer.masksToBounds = true //원형으로
+            cell.profileImageView.kf.setImage(with: url)
+//            URLSession.shared.dataTask(with: url!) { (data, response, err) in
+//                // 스레드로 로딩. 지연되지 않도록함
+//                DispatchQueue.main.async {
+//                    cell.profileImageView.image = UIImage(data: data!)
+//                    
+//                }
+//            }.resume()
+            
+            let lastMessageKey = self.chats[indexPath.row].comments.keys.sorted() { $0>$1 } // 오름차순. 내림차순은 부등호 반대로
+            cell.messageLabel.text = self.chats[indexPath.row].comments[lastMessageKey[0]]?.message
+            
+            let unixTime = self.chats[indexPath.row].comments[lastMessageKey[0]]?.timestamp
+            cell.timestampLabel.text = unixTime?.toDayTime
+            
         }
         
         return cell
+    }
+    
+    // 테이블 뷰를 클릭했을 때 생기는 이벤트
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true) // 클릭했을 때 깜빡이면서 클릭한 것이 다시 사라짐
+        
+        let destinationUid = self.destinationUsers[indexPath.row]
+        let view = self.storyboard?.instantiateViewController(withIdentifier: "ChatroomViewController") as! ChatroomViewController
+        view.destinationUid = destinationUid
+        
+        self.navigationController?.pushViewController(view, animated: true) // 화면이 밀리면서 넘어감
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -97,6 +118,7 @@ class CustomCell: UITableViewCell {
     @IBOutlet weak var profileImageView: UIImageView!
     @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var messageLabel: UILabel!
+    @IBOutlet weak var timestampLabel: UILabel!
     
     
 }

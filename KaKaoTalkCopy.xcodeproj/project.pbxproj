@@ -14,6 +14,7 @@
 		4D10C56D2484C1A100450A18 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4D10C56B2484C1A100450A18 /* Main.storyboard */; };
 		4D10C56F2484C1A200450A18 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4D10C56E2484C1A200450A18 /* Assets.xcassets */; };
 		4D10C5722484C1A200450A18 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4D10C5702484C1A200450A18 /* LaunchScreen.storyboard */; };
+		4D16D56B249CED0F005D32A9 /* AccountViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D16D56A249CED0F005D32A9 /* AccountViewController.swift */; };
 		4D1766C3248EB47D003D47A5 /* FriendsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D1766C2248EB47D003D47A5 /* FriendsViewController.swift */; };
 		4D195622248B306C007327D8 /* RemoteConfigDefaults.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4D195621248B306C007327D8 /* RemoteConfigDefaults.plist */; };
 		4D195624248B54D1007327D8 /* SignInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D195623248B54D1007327D8 /* SignInViewController.swift */; };
@@ -37,6 +38,7 @@
 		4D10C56E2484C1A200450A18 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		4D10C5712484C1A200450A18 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		4D10C5732484C1A200450A18 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		4D16D56A249CED0F005D32A9 /* AccountViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountViewController.swift; sourceTree = "<group>"; };
 		4D1766C2248EB47D003D47A5 /* FriendsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendsViewController.swift; sourceTree = "<group>"; };
 		4D195621248B306C007327D8 /* RemoteConfigDefaults.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = RemoteConfigDefaults.plist; sourceTree = "<group>"; };
 		4D195623248B54D1007327D8 /* SignInViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInViewController.swift; sourceTree = "<group>"; };
@@ -105,6 +107,7 @@
 			children = (
 				4D1766C2248EB47D003D47A5 /* FriendsViewController.swift */,
 				4D2FDF6C249B0EE300A04D5C /* ChatsViewController.swift */,
+				4D16D56A249CED0F005D32A9 /* AccountViewController.swift */,
 			);
 			path = TabBar;
 			sourceTree = "<group>";
@@ -263,6 +266,7 @@
 				4D10C5682484C1A100450A18 /* SceneDelegate.swift in Sources */,
 				4D023946248CE12A00954D89 /* SignUpViewController.swift in Sources */,
 				4DEB24DF249047BC0006F930 /* ChatModel.swift in Sources */,
+				4D16D56B249CED0F005D32A9 /* AccountViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -9,6 +9,7 @@
 import UIKit
 import SnapKit
 import Firebase
+import Kingfisher
 
 class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
@@ -64,14 +65,16 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
             m.height.width.equalTo(50)
         }
         
-        URLSession.shared.dataTask(with: URL(string: array[indexPath.row].profileImageURL!)!) { (data, response, err) in
-            DispatchQueue.main.async {
-                imageView.image = UIImage(data: data!)
-                imageView.layer.cornerRadius = imageView.frame.size.width/2
-                imageView.clipsToBounds = true
-            }
-            
-        }.resume()
+        let url = URL(string: array[indexPath.row].profileImageURL!)
+        imageView.layer.cornerRadius = 50/2 // imageView.frame.size.width/2 이거는 그려지기 전에 연산하기 때문에 정상적으로 출력이 안돼서 상수로 넣어줬다
+        imageView.clipsToBounds = true
+        imageView.kf.setImage(with: url)
+//        URLSession.shared.dataTask(with: !) { (data, response, err) in
+//            DispatchQueue.main.async {
+//                imageView.image = UIImage(data: data!)
+//            }
+//            
+//        }.resume()
         
         let label = cell.label!
         label.snp.makeConstraints { (m) in
@@ -80,6 +83,15 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
         }
         
         label.text = array[indexPath.row].name
+        
+        let messageLabel = cell.messageLabel!
+        messageLabel.snp.makeConstraints { (m) in
+            m.right.equalTo(cell)
+            m.centerY.equalTo(cell)
+        }
+        if let message = array[indexPath.row].message {
+            messageLabel.text = message
+        }
         
         return cell
     }
@@ -114,11 +126,13 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
 class FriendsViewTableCell: UITableViewCell {
     var imageview: UIImageView! = UIImageView()
     var label: UILabel! = UILabel()
+    var messageLabel: UILabel! = UILabel()
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         self.addSubview(imageview)
         self.addSubview(label)
+        self.addSubview(messageLabel)
     }
     
     required init?(coder: NSCoder) {

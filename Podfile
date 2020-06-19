@@ -19,4 +19,7 @@ pod 'Firebase/Storage'
 pod 'TextFieldEffects'
 pod 'ObjectMapper'
 
+# image loading faster
+pod 'Kingfisher'
+
 end

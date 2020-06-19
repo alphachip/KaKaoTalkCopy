@@ -8,6 +8,7 @@
 
 import UIKit
 import Firebase
+import Kingfisher //image loading faster
 
 class ChatroomViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
@@ -105,11 +106,12 @@ class ChatroomViewController: UIViewController, UITableViewDelegate, UITableView
             view.messageLabel.numberOfLines = 0
             
             let url = URL(string: (self.destinationUserModel?.profileImageURL)!)!
+            view.profileImageView.layer.cornerRadius = view.profileImageView.frame.width/2
+            view.profileImageView.clipsToBounds = true
+            view.profileImageView.kf.setImage(with: url)
             URLSession.shared.dataTask(with: url) { (data, response, err) in
                 DispatchQueue.main.async {
                     view.profileImageView.image = UIImage(data: data!)
-                    view.profileImageView.layer.cornerRadius = view.profileImageView.frame.width/2
-                    view.profileImageView.clipsToBounds = true
                 }
             }.resume()
             
