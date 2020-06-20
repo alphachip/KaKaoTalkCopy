@@ -86,13 +86,25 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
         
         let messageLabel = cell.messageLabel!
         messageLabel.snp.makeConstraints { (m) in
-            m.right.equalTo(cell)
+            m.centerX.equalTo(cell.messageBackgroundUIView) // 중간에 위치
             m.centerY.equalTo(cell)
         }
         if let message = array[indexPath.row].message {
             messageLabel.text = message
         }
         
+        // 글씨 없으면 없애주고 있으면 만들어줌
+        cell.messageBackgroundUIView.snp.makeConstraints { (m) in
+            m.right.equalTo(cell).offset(-10)
+            m.centerY.equalTo(cell)
+            if let count =  messageLabel.text?.count {
+                m.width.equalTo(count * 10) // 글자 하나 길이 10이라 가정
+            } else {
+                m.width.equalTo(0)
+            }
+            m.height.equalTo(30)
+        }
+        cell.messageBackgroundUIView.backgroundColor = UIColor.gray
         return cell
     }
     
@@ -127,11 +139,13 @@ class FriendsViewTableCell: UITableViewCell {
     var imageview: UIImageView! = UIImageView()
     var label: UILabel! = UILabel()
     var messageLabel: UILabel! = UILabel()
+    var messageBackgroundUIView: UIView = UIView();
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         self.addSubview(imageview)
         self.addSubview(label)
+        self.addSubview(messageBackgroundUIView) // 메시지 라벨 밑에 넣으면 라벨글씨를 덮어버림
         self.addSubview(messageLabel)
     }
     

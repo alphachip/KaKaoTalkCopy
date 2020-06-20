@@ -19,6 +19,9 @@ class ChatroomViewController: UIViewController, UITableViewDelegate, UITableView
     var destinationUserModel: UserModel?
     var comments: [ChatModel.Comment] = []
     
+    var databaseRef: DatabaseReference?
+    var observe: UInt?
+    
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var messageTextField: UITextField!
     @IBOutlet weak var sendButton: UIButton!
@@ -61,6 +64,9 @@ class ChatroomViewController: UIViewController, UITableViewDelegate, UITableView
         // 1. 특정 객체가 NotificationCenter에 등록된 Event를 발생 (=Post)
         // 2. 해당 Event 처리가 등록된 Observer들이 등록된 행동을 취함
         self.tabBarController?.tabBar.isHidden = false
+        
+        // 읽은 표시를 지켜보는 observe가 채팅방을 나가면 없어짐
+        databaseRef?.removeObserver(withHandle: observe!)
     }
   
     @objc func keyboardWillAppear(notification: Notification) {
@@ -193,24 +199,42 @@ class ChatroomViewController: UIViewController, UITableViewDelegate, UITableView
         }
     }
     
+    // 안 읽은 사람 인원 수
+    func setReadCount(label: UILabel?, position: Int?) {
+        let readCount = self.comments[position!].readUsers.count // 읽은 사람 수
+        Database.database().reference().child("chats").child(chatroomUid!).child("users").observeSingleEvent(of: DataEventType.value) { (datasnapshot) in
+            let dic = datasnapshot.value as! [String:Any]
+        }
+    }
+    
     func getMessageList() {
 //        debugPrint("debugPrint 102")
-        Database.database().reference().child("chats").child(self.chatroomUid!).child("comments").observe(DataEventType.value){ (datasnapshot) in
+        databaseRef = Database.database().reference().child("chats").child(self.chatroomUid!).child("comments")
+        observe = databaseRef?.observe(DataEventType.value){ (datasnapshot) in
             self.comments.removeAll() // 누적 방지
 //            debugPrint("debugPrint 105")
+            var readUserDic: Dictionary<String,AnyObject> = [:]
             for item in datasnapshot.children.allObjects as! [DataSnapshot] {
 //                debugPrint("debugPrint 107")
+                let key = item.key as String
                 let comment = ChatModel.Comment(JSON: item.value as! [String:AnyObject])
+                comment?.readUsers[self.uid!] = true
+                readUserDic[key] = (comment?.toJSON())! as NSDictionary // firebase는 NSDictionary를 지원
                 self.comments.append(comment!)
             }
+            let nsDic = readUserDic as NSDictionary
             
-            self.tableView.reloadData()
-            
-            // MARK: 메세지 내용 가져올 때 채팅방 내용을 맨 아래로 보여주기
-            if self.comments.count > 0 {
-                self.tableView.scrollToRow(at: IndexPath(item: self.comments.count - 1, section: 0), at: UITableView.ScrollPosition.bottom, animated: true)
+            datasnapshot.ref.updateChildValues(nsDic as! [AnyHashable : Any]) { (err, ref) in
+                // 업데이트 성공하면 데이터 리로드
+                self.tableView.reloadData()
+                
+                // MARK: 메세지 내용 가져올 때 채팅방 내용을 맨 아래로 보여주기
+                if self.comments.count > 0 {
+                    self.tableView.scrollToRow(at: IndexPath(item: self.comments.count - 1, section: 0), at: UITableView.ScrollPosition.bottom, animated: true)
+                }
+                //            debugPrint("debugPrint 113")
             }
-//            debugPrint("debugPrint 113")
+            
         }
     }
     
@@ -252,12 +276,14 @@ extension Int {
 class MyMessageCell: UITableViewCell {
     @IBOutlet weak var messageLabel: UILabel!
     @IBOutlet weak var timestampLabel: UILabel!
+    @IBOutlet weak var readCounterLabel: UILabel!
 }
 
 class DestinationMessageCell: UITableViewCell {
     @IBOutlet weak var profileImageView: UIImageView!
     @IBOutlet weak var messageLabel: UILabel!
     @IBOutlet weak var timestampLabel: UILabel!
+    @IBOutlet weak var readCounterLabel: UILabel!
 }
 
 // MARK: 채팅방에서 상대 이름: 강의의 말풍선 만들기1
