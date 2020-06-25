@@ -21,6 +21,7 @@ class ChatroomViewController: UIViewController, UITableViewDelegate, UITableView
     
     var databaseRef: DatabaseReference?
     var observe: UInt?
+    var peopleCount: Int?
     
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var messageTextField: UITextField!
@@ -32,9 +33,9 @@ class ChatroomViewController: UIViewController, UITableViewDelegate, UITableView
         
         uid = Auth.auth().currentUser?.uid
         
-//        debugPrint("debugPrint 29")
+        //        debugPrint("debugPrint 29")
         DidCreateChatroom()
-//        debugPrint("debugPrint 31")
+        //        debugPrint("debugPrint 31")
         self.tabBarController?.tabBar.isHidden = true // 탭바 사라짐
         
         // MARK: 바깥을 누르면 키보드가 사라짐
@@ -68,7 +69,7 @@ class ChatroomViewController: UIViewController, UITableViewDelegate, UITableView
         // 읽은 표시를 지켜보는 observe가 채팅방을 나가면 없어짐
         databaseRef?.removeObserver(withHandle: observe!)
     }
-  
+    
     @objc func keyboardWillAppear(notification: Notification) {
         if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
             self.keyboardHeightConstraint.constant = keyboardSize.height
@@ -97,13 +98,15 @@ class ChatroomViewController: UIViewController, UITableViewDelegate, UITableView
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         if self.comments[indexPath.row].uid == uid {
-             let view = tableView.dequeueReusableCell(withIdentifier: "myMessageCell", for: indexPath) as! MyMessageCell
+            let view = tableView.dequeueReusableCell(withIdentifier: "myMessageCell", for: indexPath) as! MyMessageCell
             view.messageLabel.text = self.comments[indexPath.row].message
             view.messageLabel.numberOfLines = 0 // MARK: 이렇게 해야 여러 줄 나올 수 있다?
             
             if let time = self.comments[indexPath.row].timestamp {
                 view.timestampLabel.text = time.toDayTime
             }
+            
+            setReadCount(label: view.readCounterLabel, position: indexPath.row)
             
             return view
         } else {
@@ -125,9 +128,11 @@ class ChatroomViewController: UIViewController, UITableViewDelegate, UITableView
                 view.timestampLabel.text = time.toDayTime
             }
             
+            setReadCount(label: view.readCounterLabel, position: indexPath.row)
+            
             return view
         }
-    
+        
     }
     
     @objc func dismissKeyboard() {
@@ -139,60 +144,60 @@ class ChatroomViewController: UIViewController, UITableViewDelegate, UITableView
     }
     
     @IBAction func createChatroom(_ sender: Any) {
-//        debugPrint("debugPrint 46")
+        //        debugPrint("debugPrint 46")
         let chatroomInfo: Dictionary<String,Any> = [
             "users": [
                 uid!: true,
                 destinationUid!: true
             ]
         ]
-//        debugPrint("debugPrint 53")
+        //        debugPrint("debugPrint 53")
         // MARK: 방 생성
         // FIXME: else일 때만 comment 넘겨짐. nil일 때도 넘겨줘야.
         if chatroomUid == nil {
-//            debugPrint("debugPrint 56")
+            //            debugPrint("debugPrint 56")
             self.sendButton.isEnabled = false
-//            debugPrint("debugPrint 58")
+            //            debugPrint("debugPrint 58")
             Database.database().reference().child("chats").childByAutoId().setValue(chatroomInfo, withCompletionBlock: { err,ref in
                 if err == nil {
-//                    debugPrint("debugPrint 61")
+                    //                    debugPrint("debugPrint 61")
                     self.DidCreateChatroom()
-//                    debugPrint("debugPrint 63")
+                    //                    debugPrint("debugPrint 63")
                 }
                 self.sendButton.isEnabled = true
-//                debugPrint("debugPrint 66")
+                //                debugPrint("debugPrint 66")
             })
         } else {
-//            debugPrint("debugPrint 69")
+            //            debugPrint("debugPrint 69")
             let value: Dictionary<String,Any> = [
                 "uid": uid!,
                 "message": messageTextField.text!,
                 "timestamp": ServerValue.timestamp()
             ]
-//            debugPrint("debugPrint 74")
+            //            debugPrint("debugPrint 74")
             Database.database().reference().child("chats").child(chatroomUid!).child("comments").childByAutoId().setValue(value) { (err, ref) in
                 // MARK: 메세지 보내고 나서 입력창 초기화
                 self.messageTextField.text = ""
             }
-//            debugPrint("debugPrint 76")
+            //            debugPrint("debugPrint 76")
         }
     }
     
     func DidCreateChatroom() {
-//        debugPrint("debugPrint 82")
+        //        debugPrint("debugPrint 82")
         Database.database().reference().child("chats").queryOrdered(byChild: "users/"+uid!).queryEqual(toValue: true).observeSingleEvent(of: DataEventType.value) { (datasnapshot) in
-//            debugPrint("debugPrint 84")
+            //            debugPrint("debugPrint 84")
             for item in datasnapshot.children.allObjects as! [DataSnapshot]{
-//                debugPrint("debugPrint 86")
+                //                debugPrint("debugPrint 86")
                 if let chatroomDic = item.value as? [String:AnyObject] {
-//                    debugPrint("debugPrint 88")
+                    //                    debugPrint("debugPrint 88")
                     let chatModel = ChatModel(JSON: chatroomDic);
-//                    debugPrint("debugPrint 89 \(String(describing: chatModel?.users))")
+                    //                    debugPrint("debugPrint 89 \(String(describing: chatModel?.users))")
                     if chatModel?.users[self.destinationUid!] == true {
-//                        debugPrint("debugPrint 91\(item.key)")
+                        //                        debugPrint("debugPrint 91\(item.key)")
                         self.chatroomUid = item.key
                         self.getDestinationInfo()
-//                        debugPrint("debugPrint 94")
+                        //                        debugPrint("debugPrint 94")
                     }
                 }
             }
@@ -202,43 +207,77 @@ class ChatroomViewController: UIViewController, UITableViewDelegate, UITableView
     // 안 읽은 사람 인원 수
     func setReadCount(label: UILabel?, position: Int?) {
         let readCount = self.comments[position!].readUsers.count // 읽은 사람 수
-        Database.database().reference().child("chats").child(chatroomUid!).child("users").observeSingleEvent(of: DataEventType.value) { (datasnapshot) in
-            let dic = datasnapshot.value as! [String:Any]
+        
+        // 서버에 무리를 줄이기 위함
+        if peopleCount == nil {
+            Database.database().reference().child("chats").child(chatroomUid!).child("users").observeSingleEvent(of: DataEventType.value) { (datasnapshot) in
+                let dic = datasnapshot.value as! [String:Any]
+                self.peopleCount = dic.count
+                let noReadCount = self.peopleCount! - readCount
+                
+                if noReadCount > 0 {
+                    label?.isHidden = false
+                    label?.text = String(noReadCount)
+                } else {
+                    label?.isHidden = true
+                }
+            }
+        } else {
+            let noReadCount = self.peopleCount! - readCount
+            
+            if noReadCount > 0 {
+                label?.isHidden = false
+                label?.text = String(noReadCount)
+            } else {
+                label?.isHidden = true
+            }
         }
     }
     
     func getMessageList() {
-//        debugPrint("debugPrint 102")
+        //        debugPrint("debugPrint 102")
         databaseRef = Database.database().reference().child("chats").child(self.chatroomUid!).child("comments")
         observe = databaseRef?.observe(DataEventType.value){ (datasnapshot) in
             self.comments.removeAll() // 누적 방지
-//            debugPrint("debugPrint 105")
+            //            debugPrint("debugPrint 105")
             var readUserDic: Dictionary<String,AnyObject> = [:]
             for item in datasnapshot.children.allObjects as! [DataSnapshot] {
-//                debugPrint("debugPrint 107")
+                //                debugPrint("debugPrint 107")
                 let key = item.key as String
+                // 마지막 메세지 읽었는지 보고.  comment 분기 처리. 1: comments. 2: readuserdic
                 let comment = ChatModel.Comment(JSON: item.value as! [String:AnyObject])
-                comment?.readUsers[self.uid!] = true
-                readUserDic[key] = (comment?.toJSON())! as NSDictionary // firebase는 NSDictionary를 지원
+                let comment_motify = ChatModel.Comment(JSON: item.value as! [String:AnyObject])
+                comment_motify?.readUsers[self.uid!] = true
+                readUserDic[key] = (comment_motify?.toJSON())! as NSDictionary // firebase는 NSDictionary를 지원
                 self.comments.append(comment!)
             }
             let nsDic = readUserDic as NSDictionary
-            
-            datasnapshot.ref.updateChildValues(nsDic as! [AnyHashable : Any]) { (err, ref) in
-                // 업데이트 성공하면 데이터 리로드
+            if(!(self.comments.last?.readUsers.keys.contains(self.uid!))!){
+                // 업데이트
+                datasnapshot.ref.updateChildValues(nsDic as! [AnyHashable : Any]) { (err, ref) in
+                    // 업데이트 성공하면 데이터 리로드
+                    self.tableView.reloadData()
+                    
+                    // MARK: 메세지 내용 가져올 때 채팅방 내용을 맨 아래로 보여주기
+                    if self.comments.count > 0 {
+                        self.tableView.scrollToRow(at: IndexPath(item: self.comments.count - 1, section: 0), at: UITableView.ScrollPosition.bottom, animated: true)
+                    }
+                    //            debugPrint("debugPrint 113")
+                }
+            } else {
+                // 업데이트 된 거 표현만 해줌
                 self.tableView.reloadData()
                 
                 // MARK: 메세지 내용 가져올 때 채팅방 내용을 맨 아래로 보여주기
                 if self.comments.count > 0 {
                     self.tableView.scrollToRow(at: IndexPath(item: self.comments.count - 1, section: 0), at: UITableView.ScrollPosition.bottom, animated: true)
                 }
-                //            debugPrint("debugPrint 113")
             }
             
         }
     }
     
-
+    
     
     func getDestinationInfo() {
         Database.database().reference().child("users").child(self.destinationUid!).observeSingleEvent(of: DataEventType.value) { datasnapshot in
@@ -248,8 +287,8 @@ class ChatroomViewController: UIViewController, UITableViewDelegate, UITableView
         }
     }
     
-//    FIXME: 테이블 내의 셀을 NIB으로 Destination 데이터(profile image, uid) 받을 때도 extension이나 protocol 등 고려해보기
-//    TODO: 메소드나 클래스, 프로퍼티 등 순서 정리
+    //    FIXME: 테이블 내의 셀을 NIB으로 Destination 데이터(profile image, uid) 받을 때도 extension이나 protocol 등 고려해보기
+    //    TODO: 메소드나 클래스, 프로퍼티 등 순서 정리
     
     /*
      // MARK: - Navigation
