@@ -18,9 +18,14 @@ pod 'Firebase/Storage'
 pod 'Firebase/Messaging'
 
 pod 'TextFieldEffects'
+pod 'BEMCheckBox'
+
 pod 'ObjectMapper'
 
 # image loading faster
 pod 'Kingfisher'
+
+# Alamofire is an HTTP networking library written in Swift.
+pod 'Alamofire', '~> 5.2'
 
 end

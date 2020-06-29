@@ -16,8 +16,36 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
     var array: [UserModel] = []
     var tableView: UITableView!
     
+    
+    @objc func printTestItem() {
+        print("clickckckckckck")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.text = "Friends"
+        label.textAlignment = .left
+        navigationItem.titleView = label
+//        view.addSubview(label)
+        if let navigationBar = navigationController?.navigationBar {
+            
+            label.leadingAnchor.constraint(equalTo: navigationBar.layoutMarginsGuide.leadingAnchor, constant: 0).isActive = true
+            label.centerYAnchor.constraint(equalTo: navigationBar.centerYAnchor, constant: 0).isActive = true
+//            label.topAnchor.constraint(equalTo: navigationBar.topAnchor, constant: 0).isActive = true
+//            label.bottomAnchor.constraint(equalTo: navigationBar.bottomAnchor, constant: 0).isActive = true
+            
+            let searchFriendButton = UIBarButtonItem(image: UIImage(systemName: "magnifyingglass"), style: .plain, target: self, action: #selector(printTestItem))
+            let addFriendButton = UIBarButtonItem(image: UIImage(systemName: "person.badge.plus"), style: .plain, target: self, action: #selector(printTestItem))
+            let playMusicButton = UIBarButtonItem(image: UIImage(systemName: "music.note"), style: .plain, target: self, action: #selector(printTestItem))
+            let settingButton = UIBarButtonItem(image: UIImage(systemName: "gear"), style: .plain, target: self, action: #selector(printTestItem))
+            
+            navigationItem.rightBarButtonItems = [settingButton, playMusicButton, addFriendButton, searchFriendButton]
+            
+        }
+        
         tableView = UITableView()
         tableView.delegate = self
         tableView.dataSource = self
@@ -53,6 +81,22 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
             }
         }
         
+        let selectFriendButton = UIButton()
+        view.addSubview(selectFriendButton)
+        selectFriendButton.snp.makeConstraints { (m) in
+            m.bottom.equalTo(view).offset(-90)
+            m.right.equalTo(view).offset(-20)
+            m.width.height.equalTo(50)
+        }
+        selectFriendButton.backgroundColor = UIColor.black
+        selectFriendButton.addTarget(self, action: #selector(showSelectFriendController), for: .touchUpInside)
+        selectFriendButton.layer.cornerRadius = 25
+        selectFriendButton.layer.masksToBounds = true
+        
+    }
+    
+    @objc func showSelectFriendController() {
+        self.performSegue(withIdentifier: "SelectFriendSegue", sender: nil)
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {

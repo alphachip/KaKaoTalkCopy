@@ -9,6 +9,7 @@
 import UIKit
 import Firebase
 import Kingfisher //image loading faster
+import Alamofire //http networking for notification
 
 class ChatroomViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
@@ -111,6 +112,7 @@ class ChatroomViewController: UIViewController, UITableViewDelegate, UITableView
             return view
         } else {
             let view = tableView.dequeueReusableCell(withIdentifier: "destinationMessageCell", for: indexPath) as! DestinationMessageCell
+            view.nameLabel.text = self.destinationUserModel?.name
             view.messageLabel.text = self.comments[indexPath.row].message
             view.messageLabel.numberOfLines = 0
             
@@ -176,10 +178,39 @@ class ChatroomViewController: UIViewController, UITableViewDelegate, UITableView
             ]
             //            debugPrint("debugPrint 74")
             Database.database().reference().child("chats").child(chatroomUid!).child("comments").childByAutoId().setValue(value) { (err, ref) in
-                // MARK: 메세지 보내고 나서 입력창 초기화
+                // MARK: 메세지 보내고 나서 알람보내고 입력창 초기화
+                self.sendGCM()
                 self.messageTextField.text = ""
             }
             //            debugPrint("debugPrint 76")
+        }
+    }
+    
+    func sendGCM() {
+        // docs: https://firebase.google.com/docs/cloud-messaging/http-server-ref
+        let url = "https://fcm.googleapis.com/fcm/send"
+        let header: HTTPHeaders = [
+            "Content-Type":"application/json",
+            "Authorization":"key=AAAAzxCVcf8:APA91bHZA95ywGesIJbRTsG6l4yaxuZc8c4Kv3y3VEyLyE3zahdfMPPiVlhKi3SXb8yMkfCnUrADRE6rNJE8wOulnTvVMFxs0jLxDyomkJBz_9wE_IhyIlJfEFp3E0vWcuBZg3PWCPgf"
+        ]
+        
+        let notificationModel = NotificationModel()
+        notificationModel.to = destinationUserModel?.pushToken
+        notificationModel.notification.title = "보낸 이 아이디"
+        notificationModel.notification.text = messageTextField.text
+        
+        let params = notificationModel.toJSON()
+        
+        AF.request(url,
+                   method: .post,
+                   parameters: params,
+                   encoding: JSONEncoding.default,
+                   headers: header).responseJSON { (response) in
+                    do {
+                    try print(response.result.get())
+                    } catch {
+                        print(error)
+                    }
         }
     }
     
@@ -252,7 +283,12 @@ class ChatroomViewController: UIViewController, UITableViewDelegate, UITableView
                 self.comments.append(comment!)
             }
             let nsDic = readUserDic as NSDictionary
-            if(!(self.comments.last?.readUsers.keys.contains(self.uid!))!){
+            
+            if self.comments.last?.readUsers.keys == nil {
+                return
+            }
+            
+            if !(self.comments.last?.readUsers.keys.contains(self.uid!))! { // 읽는 것 체크인데 채팅방을 방금 만들어서 코멘트 없을 때 에러날 수 있으므로 바로 위 if문에서 nil 체크.
                 // 업데이트
                 datasnapshot.ref.updateChildValues(nsDic as! [AnyHashable : Any]) { (err, ref) in
                     // 업데이트 성공하면 데이터 리로드
@@ -319,6 +355,8 @@ class MyMessageCell: UITableViewCell {
 }
 
 class DestinationMessageCell: UITableViewCell {
+
+    @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var profileImageView: UIImageView!
     @IBOutlet weak var messageLabel: UILabel!
     @IBOutlet weak var timestampLabel: UILabel!
