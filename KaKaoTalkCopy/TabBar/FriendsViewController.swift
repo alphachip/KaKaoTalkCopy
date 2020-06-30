@@ -16,7 +16,6 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
     var array: [UserModel] = []
     var tableView: UITableView!
     
-    
     @objc func printTestItem() {
         print("clickckckckckck")
     }
@@ -24,18 +23,19 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        // MARK: Custom navigation-bar
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "Friends"
         label.textAlignment = .left
         navigationItem.titleView = label
-//        view.addSubview(label)
+        //        view.addSubview(label)
         if let navigationBar = navigationController?.navigationBar {
             
             label.leadingAnchor.constraint(equalTo: navigationBar.layoutMarginsGuide.leadingAnchor, constant: 0).isActive = true
             label.centerYAnchor.constraint(equalTo: navigationBar.centerYAnchor, constant: 0).isActive = true
-//            label.topAnchor.constraint(equalTo: navigationBar.topAnchor, constant: 0).isActive = true
-//            label.bottomAnchor.constraint(equalTo: navigationBar.bottomAnchor, constant: 0).isActive = true
+            //            label.topAnchor.constraint(equalTo: navigationBar.topAnchor, constant: 0).isActive = true
+            //            label.bottomAnchor.constraint(equalTo: navigationBar.bottomAnchor, constant: 0).isActive = true
             
             let searchFriendButton = UIBarButtonItem(image: UIImage(systemName: "magnifyingglass"), style: .plain, target: self, action: #selector(printTestItem))
             let addFriendButton = UIBarButtonItem(image: UIImage(systemName: "person.badge.plus"), style: .plain, target: self, action: #selector(printTestItem))
@@ -46,6 +46,7 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
             
         }
         
+        // MARK: Make Friends-List
         tableView = UITableView()
         tableView.delegate = self
         tableView.dataSource = self
@@ -57,11 +58,12 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
             m.bottom.left.right.equalTo(view)
         }
         
+        // MARK: Load Friends-List
         Database.database().reference().child("users").observe(DataEventType.value) { (snapshot) in
             
             self.array.removeAll()
             
-            let myUid = Auth.auth().currentUser?.uid
+            //            let myUid = Auth.auth().currentUser?.uid
             
             //MARK: Read user info
             for child in snapshot.children {
@@ -70,9 +72,9 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
                 
                 if let dicItem = fchild.value as? [String : Any]{
                     userModel.setValuesForKeys(dicItem)
-                    if userModel.uid != myUid {
-                        self.array.append(userModel)
-                    }
+                    //                    if userModel.uid != myUid {
+                    self.array.append(userModel)
+                    //                    }
                 }
             }
             
@@ -81,6 +83,7 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
             }
         }
         
+        // MARK: Make Group-Chat-Button
         let selectFriendButton = UIButton()
         view.addSubview(selectFriendButton)
         selectFriendButton.snp.makeConstraints { (m) in
@@ -113,12 +116,12 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
         imageView.layer.cornerRadius = 50/2 // imageView.frame.size.width/2 이거는 그려지기 전에 연산하기 때문에 정상적으로 출력이 안돼서 상수로 넣어줬다
         imageView.clipsToBounds = true
         imageView.kf.setImage(with: url)
-//        URLSession.shared.dataTask(with: !) { (data, response, err) in
-//            DispatchQueue.main.async {
-//                imageView.image = UIImage(data: data!)
-//            }
-//            
-//        }.resume()
+        //        URLSession.shared.dataTask(with: !) { (data, response, err) in
+        //            DispatchQueue.main.async {
+        //                imageView.image = UIImage(data: data!)
+        //            }
+        //
+        //        }.resume()
         
         let label = cell.label!
         label.snp.makeConstraints { (m) in
@@ -153,10 +156,23 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if let view = self.storyboard?.instantiateViewController(identifier: "ChatroomViewController") as? ChatroomViewController {
-            view.destinationUid = self.array[indexPath.row].uid
-            
-            self.navigationController?.pushViewController(view, animated: true)
+        let myUid = Auth.auth().currentUser?.uid
+        if self.array[indexPath.row].uid == myUid {
+//            if let view = self.storyboard?.instantiateViewController(identifier: "ProfileViewController") as? ProfileViewController {
+//                view.destinationUid = self.array[indexPath.row].uid
+//                view.modalPresentationStyle = .fullScreen
+//                self.present(view, animated: true, completion: nil)
+//            }
+            if let view = self.storyboard?.instantiateViewController(identifier: "ProfileTabBarController") as? ProfileTabBarController {
+                view.destinationUid = self.array[indexPath.row].uid
+                view.modalPresentationStyle = .fullScreen
+                self.present(view, animated: true, completion: nil)
+            }
+        } else {
+            if let view = self.storyboard?.instantiateViewController(identifier: "ChatroomViewController") as? ChatroomViewController {
+                view.destinationUid = self.array[indexPath.row].uid
+                self.navigationController?.pushViewController(view, animated: true)
+            }
         }
     }
     

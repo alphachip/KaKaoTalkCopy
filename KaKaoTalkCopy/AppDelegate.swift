@@ -14,7 +14,7 @@ import UserNotificationsUI
 class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+        
         Messaging.messaging().delegate = self
         FirebaseApp.configure()
         
@@ -76,6 +76,8 @@ extension UIViewController {
         self.present(alert, animated: true, completion: nil)
     }
 }
+
+// TODO: FCM 관련
 extension AppDelegate: UNUserNotificationCenterDelegate {
   func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
     print("\(#function)")

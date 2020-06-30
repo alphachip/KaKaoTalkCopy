@@ -9,7 +9,7 @@
 import UIKit
 import Firebase
 
-class AccountViewController: UIViewController {
+class HashViewController: UIViewController {
     @IBOutlet weak var statusMessageButton: UIButton!
     
     override func viewDidLoad() {

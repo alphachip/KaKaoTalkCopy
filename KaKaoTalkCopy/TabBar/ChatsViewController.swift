@@ -28,7 +28,7 @@ class ChatsViewController: UIViewController, UITableViewDelegate, UITableViewDat
         
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "Friends"
+        label.text = "Chats"
         label.textAlignment = .left
         navigationItem.titleView = label
         //        view.addSubview(label)
@@ -40,7 +40,7 @@ class ChatsViewController: UIViewController, UITableViewDelegate, UITableViewDat
             //            label.bottomAnchor.constraint(equalTo: navigationBar.bottomAnchor, constant: 0).isActive = true
             
             let searchFriendButton = UIBarButtonItem(image: UIImage(systemName: "magnifyingglass"), style: .plain, target: self, action: #selector(printTestItem))
-            let addFriendButton = UIBarButtonItem(image: UIImage(systemName: "person.badge.plus"), style: .plain, target: self, action: #selector(printTestItem))
+            let addFriendButton = UIBarButtonItem(image: UIImage(systemName: "plus.bubble"), style: .plain, target: self, action: #selector(printTestItem))
             let playMusicButton = UIBarButtonItem(image: UIImage(systemName: "music.note"), style: .plain, target: self, action: #selector(printTestItem))
             let settingButton = UIBarButtonItem(image: UIImage(systemName: "gear"), style: .plain, target: self, action: #selector(printTestItem))
             

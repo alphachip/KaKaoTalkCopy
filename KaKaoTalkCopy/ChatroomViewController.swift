@@ -15,7 +15,7 @@ class ChatroomViewController: UIViewController, UITableViewDelegate, UITableView
     
     var uid: String?
     var chatroomUid: String?
-    public var destinationUid: String?
+    var destinationUid: String?
     
     var destinationUserModel: UserModel?
     var comments: [ChatModel.Comment] = []
@@ -28,6 +28,17 @@ class ChatroomViewController: UIViewController, UITableViewDelegate, UITableView
     @IBOutlet weak var messageTextField: UITextField!
     @IBOutlet weak var sendButton: UIButton!
     @IBOutlet weak var keyboardHeightConstraint: NSLayoutConstraint!
+    
+    required init(destinationUid: String?) {
+        self.destinationUid = destinationUid
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    init(destinationUid: String?)
+    {
+        super.init()
+        self.destinationUid = destinationUid
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
